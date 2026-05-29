@@ -23,6 +23,7 @@
     {
       overlays.default = final: prev: {
         cliproxyapi = final.callPackage ./pkgs/cliproxyapi/package.nix { };
+        cpa-usage-keeper = final.callPackage ./pkgs/cpa-usage-keeper/package.nix { };
       };
 
       packages = forAllSystems (
@@ -30,9 +31,10 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
           cliproxyapi = pkgs.callPackage ./pkgs/cliproxyapi/package.nix { };
+          cpa-usage-keeper = pkgs.callPackage ./pkgs/cpa-usage-keeper/package.nix { };
         in
         {
-          inherit cliproxyapi;
+          inherit cliproxyapi cpa-usage-keeper;
           default = cliproxyapi;
         }
       );

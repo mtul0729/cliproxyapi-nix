@@ -22,4 +22,6 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Build & push to cachix
-        run: nix build .#cliproxyapi --print-out-paths | cachix push mtul
+        run: |
+          nix build .#cliproxyapi --print-out-paths | cachix push mtul
+          nix build .#cpa-usage-keeper --print-out-paths | cachix push mtul

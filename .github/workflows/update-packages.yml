@@ -1,4 +1,4 @@
-name: Update cliproxyapi
+name: Update packages
 
 on:
   schedule:
@@ -12,36 +12,34 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - package: cliproxyapi
+            filename: pkgs/cliproxyapi/package.nix
+          - package: cpa-usage-keeper
+            filename: pkgs/cpa-usage-keeper/package.nix
     steps:
       - uses: actions/checkout@v4
 
       - uses: DeterminateSystems/nix-installer-action@v14
 
-      - uses: cachix/cachix-action@v15
-        with:
-          name: mtul
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-
       - name: Check for update
         id: update
         run: |
-          nix run nixpkgs#nix-update --cliproxyapi --flake \
-            --override-filename pkgs/cliproxyapi/package.nix 2>&1 | tee /tmp/nix-update.log
+          nix run nixpkgs#nix-update -- ${{ matrix.package }} --flake \
+            --override-filename ${{ matrix.filename }} 2>&1 | tee /tmp/nix-update.log
           if grep -q "Already up to date" /tmp/nix-update.log; then
             echo "updated=false" >> "$GITHUB_OUTPUT"
           else
             echo "updated=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Build & push to cachix
-        if: steps.update.outputs.updated == 'true'
-        run: nix build .#cliproxyapi --print-out-paths | cachix push mtul
-
       - name: Create PR
         if: steps.update.outputs.updated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          title: "chore: bump cliproxyapi"
+          title: "chore: bump ${{ matrix.package }}"
           body: Automated version bump via nix-update
-          branch: auto/cliproxyapi-update
+          branch: "auto/${{ matrix.package }}-update"
           labels: dependencies
