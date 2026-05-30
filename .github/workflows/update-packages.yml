@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   update:
@@ -60,5 +61,15 @@ jobs:
       - name: Enable auto-merge
         if: steps.update.outputs.updated == 'true' && steps.pr.outputs.pull-request-number
         run: gh pr merge --auto --squash ${{ steps.pr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN }}
+      - name: Notify on failure
+        if: failure()
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "❌ Update failed: ${{ matrix.package }}" \
+            --body "Workflow run failed for package **${{ matrix.package }}**.\n\nRun: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label bug
         env:
           GH_TOKEN: ${{ secrets.PR_TOKEN }}
