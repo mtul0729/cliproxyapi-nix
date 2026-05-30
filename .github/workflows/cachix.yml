@@ -23,5 +23,5 @@ jobs:
 
       - name: Build & push to cachix
         run: |
-          nix build .#cliproxyapi --print-out-paths | cachix push mtul
-          nix build .#cpa-usage-keeper --print-out-paths | cachix push mtul
+          nix build .#cliproxyapi --no-link
+          nix build .#cpa-usage-keeper --no-link

@@ -45,7 +45,7 @@ jobs:
 
       - name: Build & push to cachix
         if: steps.update.outputs.updated == 'true'
-        run: nix build .#${{ matrix.package }} --print-out-paths | cachix push mtul
+        run: nix build .#${{ matrix.package }} --no-link
 
       - name: Create PR
         if: steps.update.outputs.updated == 'true'
