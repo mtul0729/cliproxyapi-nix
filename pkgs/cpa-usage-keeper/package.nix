@@ -23,9 +23,9 @@ stdenv.mkDerivation (finalAttrs: {
     runHook preInstall
 
     install -Dm755 cpa-usage-keeper "$out/bin/cpa-usage-keeper"
-    install -Dm644 .env.example "$out/share/doc/cpa-usage-keeper/.env.example"
-    install -Dm644 README.md "$out/share/doc/cpa-usage-keeper/README.md"
-    install -Dm644 README.en.md "$out/share/doc/cpa-usage-keeper/README.en.md"
+    for f in .env.example README.md README.en.md; do
+      [ -f "$f" ] && install -Dm644 "$f" "$out/share/doc/cpa-usage-keeper/$f"
+    done
     install -Dm644 LICENSE "$out/share/licenses/cpa-usage-keeper/LICENSE"
 
     runHook postInstall
