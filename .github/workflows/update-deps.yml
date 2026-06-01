@@ -19,5 +19,15 @@ jobs:
 
       - uses: DeterminateSystems/update-flake-lock@v24
         with:
+          token: ${{ secrets.PR_TOKEN }}
           pr-title: "chore: update flake.lock"
           pr-labels: dependencies
+
+      - name: Enable auto-merge
+        run: |
+          pr_number=$(gh pr list --head update_flake_lock_action --json number --jq '.[0].number')
+          if [ -n "$pr_number" ]; then
+            gh pr merge --auto --squash "$pr_number"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN }}
