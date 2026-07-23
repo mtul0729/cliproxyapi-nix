@@ -7,11 +7,11 @@
 }:
 stdenv.mkDerivation (finalAttrs: {
   pname = "cpa-usage-keeper";
-  version = "1.13.6";
+  version = "1.13.7";
 
   src = fetchurl {
     url = "https://github.com/Willxup/cpa-usage-keeper/releases/download/v${finalAttrs.version}/cpa-usage-keeper_v${finalAttrs.version}_linux_amd64.tar.gz";
-    hash = "sha256-qFO17J4j1JEjGVgQEwomRopHIRPb70JfxvlxV1KO4Ro=";
+    hash = "sha256-WpvlBe2Qu68M0Rwip92vNEvJkdftLp+cYA6VfsUsmCk=";
   };
 
   nativeBuildInputs = [ autoPatchelfHook ];
